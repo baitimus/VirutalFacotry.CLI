@@ -129,9 +129,13 @@ public class Machine
     // Simulate machine running process
     private async Task RunningProcess(CancellationToken cancellationToken)
     {
+      
         int processCount = 0;
         Job currentJob = _jobManager.GetCurrentJob();
         int targetCycles = currentJob?.Quantity ?? 3; // Default to 3 cycles if no job quantity specified
+      
+            processCount = currentJob.QuantityProduced;
+        
 
         try
         {
@@ -151,13 +155,18 @@ public class Machine
 
                 // Wait for 3 seconds
                 await Task.Delay(3000, cancellationToken);
+
+
+
+               
+                
             }
 
             // If we completed all cycles without error or cancellation, mark the job as completed
             if (!cancellationToken.IsCancellationRequested && CurrentState != State.Error && currentJob != null && processCount >= targetCycles)
             {
                 _jobManager.CompleteCurrentJob();
-                _display.UpdateMessage($"Job {currentJob.JobId} completed successfully");
+                _display.UpdateMessage($"Job {currentJob.JobId} completed successfully" + $"Produced: {currentJob.QuantityProduced} " );
             }
         }
         catch (OperationCanceledException)
