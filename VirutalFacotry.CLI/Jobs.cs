@@ -32,7 +32,7 @@ public class Job
 
     public void Produce(int quantity)
     {
-        QuantityProduced += quantity;
+        QuantityProduced = quantity;
         if (QuantityProduced >= Quantity)
         {
             Status = JobStatus.Done;
