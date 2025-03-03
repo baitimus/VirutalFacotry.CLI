@@ -111,6 +111,10 @@ public class Machine
                 // Cancel the background process
                 _cancellationTokenSource?.Cancel();
                 CurrentState = State.Ready;
+                Job currentJob = _jobManager.GetCurrentJob()
+                    ;
+                
+             
                 _display.UpdateMessage("Machine stopped");
                 break;
 

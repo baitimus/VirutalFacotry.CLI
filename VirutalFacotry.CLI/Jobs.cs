@@ -14,9 +14,10 @@ public class Job
 
     public string ProductName { get; private set; }
     public int Quantity { get; private set; }
+    public int QuantityProduced { get; private set; }
     public JobStatus Status { get; internal set; }
     public DateTime CreatedTime { get; private set; }
-    
+
     public int JobId { get; private set; }
 
     public Job(int jobId, string productName, int quantity)
@@ -24,14 +25,23 @@ public class Job
         JobId = jobId;
         ProductName = productName;
         Quantity = quantity;
+        QuantityProduced = 0;
         Status = JobStatus.Pending;
         CreatedTime = DateTime.Now;
-       
+    }
+
+    public void Produce(int quantity)
+    {
+        QuantityProduced += quantity;
+        if (QuantityProduced >= Quantity)
+        {
+            Status = JobStatus.Done;
+        }
     }
 
     public override string ToString()
     {
-        return $"Job #{JobId}: {ProductName} (Qty: {Quantity}) - Status: {Status}";
+        return $"Job #{JobId}: {ProductName} (Qty: {Quantity}, Produced: {QuantityProduced}) - Status: {Status}";
     }
 }
 
@@ -93,9 +103,19 @@ public class JobManager
     {
         if (_currentJob != null && _currentJob.Status == Job.JobStatus.InWork)
         {
-            _currentJob.Status = Job.JobStatus.Done;
-            
+            _currentJob.Produce(_currentJob.Quantity - _currentJob.QuantityProduced);
             _display.UpdateMessage($"Completed {_currentJob}");
+            _display.UpdateJobStatus("No job running");
+            _currentJob = null;
+        }
+    }
+
+    public void StopCurrentJob(int quantityProduced)
+    {
+        if (_currentJob != null && _currentJob.Status == Job.JobStatus.InWork)
+        {
+            _currentJob.Produce(quantityProduced);
+            _display.UpdateMessage($"Stopped {_currentJob} with {_currentJob.QuantityProduced} produced.");
             _display.UpdateJobStatus("No job running");
             _currentJob = null;
         }
@@ -126,9 +146,7 @@ public class JobManager
             return;
         }
 
-      
-
-        
+        _display.UpdateMessage(job.ToString());
     }
 
     public Job GetCurrentJob()

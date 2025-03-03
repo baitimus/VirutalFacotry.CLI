@@ -37,7 +37,7 @@ class Program
                     display.UpdateMessage("Shutting down simulation...");
                     break;
 
-                case "job":
+               
                 case "help":
                     DisplayHelp(display);
                     break;
@@ -54,10 +54,7 @@ class Program
                     StartJob(machine, display);
                     break;
 
-                case "job status":
-                    CheckJobStatus(machine, display);
-                    break;
-
+           
                 case "cancel job":
                     CancelJob(machine, display);
                     break;
@@ -71,8 +68,9 @@ class Program
 
     private static void DisplayHelp(ConsoleDisplay display)
     {
-        display.UpdateMessage("Available commands: 'start', 'stop', 'exit', 'new job', 'list jobs', 'job status', 'start job', 'cancel job'");
+        display.UpdateMessage("Available commands: 'start', 'stop', 'exit', 'new job', 'list jobs', 'start job', 'cancel job'");
     }
+
 
     private static void CreateNewJob(Machine machine, ConsoleDisplay display)
     {
@@ -114,6 +112,8 @@ class Program
         string jobIdInput = Console.ReadLine();
         display.ClearInput();
 
+
+
         if (int.TryParse(jobIdInput, out int jobId))
         {
             if (machine.JobManager.StartJob(jobId))
@@ -127,22 +127,7 @@ class Program
         }
     }
 
-    private static void CheckJobStatus(Machine machine, ConsoleDisplay display)
-    {
-        display.UpdateMessage("Enter job ID to check status:");
-        display.SetCursorToInput();
-        string jobIdInput = Console.ReadLine();
-        display.ClearInput();
 
-        if (int.TryParse(jobIdInput, out int jobId))
-        {
-            machine.JobManager.GetJobStatus(jobId);
-        }
-        else
-        {
-            display.UpdateMessage("Invalid job ID. Please enter a valid number.");
-        }
-    }
 
     private static void CancelJob(Machine machine, ConsoleDisplay display)
     {

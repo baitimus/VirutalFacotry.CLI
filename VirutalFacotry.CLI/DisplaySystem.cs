@@ -24,7 +24,7 @@ public class ConsoleDisplay
         Console.WriteLine("Virtual Factory Machine Simulation");
         Console.WriteLine("=================================");
         Console.WriteLine("Machine Commands: 'start', 'stop', 'exit'");
-        Console.WriteLine("Job Commands: 'new job', 'list jobs', 'job status', 'start job', 'cancel job'");
+        Console.WriteLine("Job Commands: 'new job', 'list jobs', 'start job', 'cancel job'");
         Console.WriteLine();
 
         // Fixed status lines
@@ -35,9 +35,7 @@ public class ConsoleDisplay
         Console.WriteLine();
 
         // Job list section
-        Console.WriteLine("Jobs:");
-        Console.WriteLine(" (No jobs to display)");
-        Console.WriteLine();
+   
 
         // Input prompt
         Console.WriteLine("> ");
