@@ -16,7 +16,7 @@ public class Job
     public int Quantity { get; private set; }
     public int QuantityProduced { get; private set; }
     public JobStatus Status { get; internal set; }
-    public DateTime CreatedTime { get; private set; }
+ 
 
     public int JobId { get; private set; }
 
@@ -27,7 +27,7 @@ public class Job
         Quantity = quantity;
         QuantityProduced = 0;
         Status = JobStatus.Pending;
-        CreatedTime = DateTime.Now;
+      
     }
 
     public void Produce(int quantity)
