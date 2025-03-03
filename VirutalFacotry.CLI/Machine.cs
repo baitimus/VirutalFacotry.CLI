@@ -74,9 +74,9 @@ public class Machine
             case State.Ready:
                 // Only start if there's a job in InWork state
                 Job currentJob = _jobManager.GetCurrentJob();
-                if (currentJob == null || currentJob.Status != Job.JobStatus.InWork)
+                if (currentJob == null)
                 {
-                    _display.UpdateMessage("Cannot start machine without an active job. Use 'start job' command first.");
+                    _display.UpdateMessage("Cannot start machine without an active job. Use 'select job' command first.");
                     return;
                 }
 
@@ -112,7 +112,7 @@ public class Machine
                 _cancellationTokenSource?.Cancel();
                 CurrentState = State.Ready;
                 Job currentJob = _jobManager.GetCurrentJob();
-
+                
 
                 _display.UpdateMessage("Machine stopped" + $"Produced {currentJob.QuantityProduced} / {currentJob.Quantity}");
                 break;

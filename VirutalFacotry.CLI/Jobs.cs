@@ -110,16 +110,7 @@ public class JobManager
         }
     }
 
-    public void StopCurrentJob(int quantityProduced)
-    {
-        if (_currentJob != null && _currentJob.Status == Job.JobStatus.InWork)
-        {
-            _currentJob.Produce(quantityProduced);
-            _display.UpdateMessage($"Stopped {_currentJob} with {_currentJob.QuantityProduced} produced.");
-            _display.UpdateJobStatus("No job running");
-            _currentJob = null;
-        }
-    }
+
 
     public void ListAllJobs()
     {

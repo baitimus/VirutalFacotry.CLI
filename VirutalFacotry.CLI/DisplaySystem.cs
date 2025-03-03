@@ -24,7 +24,7 @@ public class ConsoleDisplay
         Console.WriteLine("Virtual Factory Machine Simulation");
         Console.WriteLine("=================================");
         Console.WriteLine("Machine Commands: 'start', 'stop', 'exit'");
-        Console.WriteLine("Job Commands: 'new job', 'list jobs', 'start job', 'cancel job'");
+        Console.WriteLine("Job Commands: 'new job', 'list jobs', 'select job', 'cancel job'");
         Console.WriteLine();
 
         // Fixed status lines

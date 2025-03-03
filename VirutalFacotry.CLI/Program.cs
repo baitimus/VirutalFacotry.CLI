@@ -50,8 +50,8 @@ class Program
                     machine.JobManager.ListAllJobs();
                     break;
 
-                case "start job":
-                    StartJob(machine, display);
+                case "select job":
+                    SelectJob(machine, display);
                     break;
 
            
@@ -99,7 +99,7 @@ class Program
         }
     }
 
-    private static void StartJob(Machine machine, ConsoleDisplay display)
+    private static void SelectJob(Machine machine, ConsoleDisplay display)
     {
         if (machine.CurrentState == Machine.State.Running)
         {
