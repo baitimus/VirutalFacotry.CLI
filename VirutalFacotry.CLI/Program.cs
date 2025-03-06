@@ -12,7 +12,7 @@ class Program
         Machine machine = new Machine(display);
 
         bool running = true;
-
+        
         while (running)
         {
             display.SetCursorToInput();

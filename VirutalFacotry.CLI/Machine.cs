@@ -142,6 +142,8 @@ public class Machine
             {
                 processCount++;
                 currentJob.Produce(processCount);
+                
+
                 // Update message 
                 _display.UpdateMessage($"Processing job {currentJob.JobId}: {currentJob.ProductName} (cycle {processCount}/{targetCycles})");
 

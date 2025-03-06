@@ -17,9 +17,9 @@ public class Job
     public int QuantityProduced { get; private set; }
     public JobStatus Status { get; internal set; }
  
-
     public int JobId { get; private set; }
 
+    // Original constructor
     public Job(int jobId, string productName, int quantity)
     {
         JobId = jobId;
@@ -27,7 +27,16 @@ public class Job
         Quantity = quantity;
         QuantityProduced = 0;
         Status = JobStatus.Pending;
-      
+    }
+    
+    // New constructor for loading jobs from file
+    public Job(int jobId, string productName, int quantity, int quantityProduced, JobStatus status)
+    {
+        JobId = jobId;
+        ProductName = productName;
+        Quantity = quantity;
+        QuantityProduced = quantityProduced;
+        Status = status;
     }
 
     public void Produce(int quantity)
@@ -54,10 +63,20 @@ public class JobManager
 
     public JobManager(ConsoleDisplay display)
     {
-        _jobs = new List<Job>();
-        _nextJobId = 1;
         _display = display;
         _currentJob = null;
+        
+        // Load jobs from file
+        _jobs = JobPersistence.LoadJobs();
+        
+        // Find highest job ID to set next ID correctly
+        _nextJobId = 1;
+        if (_jobs.Count > 0)
+        {
+            _nextJobId = _jobs.Max(j => j.JobId) + 1;
+        }
+        
+        _display.UpdateMessage($"Loaded {_jobs.Count} jobs from storage");
     }
 
     public Job CreateJob(string productName, int quantity)
@@ -65,7 +84,16 @@ public class JobManager
         Job newJob = new Job(_nextJobId++, productName, quantity);
         _jobs.Add(newJob);
         _display.UpdateMessage($"Created {newJob}");
+        
+        // Save jobs after creating a new one
+        SaveJobs();
+        
         return newJob;
+    }
+    
+    private void SaveJobs()
+    {
+        JobPersistence.SaveJobs(_jobs);
     }
 
     public bool StartJob(int jobId)
@@ -96,6 +124,10 @@ public class JobManager
         job.Status = Job.JobStatus.InWork;
         _currentJob = job;
         _display.UpdateJobStatus(_currentJob.ToString());
+        
+        // Save job status change
+        SaveJobs();
+        
         return true;
     }
 
@@ -107,10 +139,22 @@ public class JobManager
             _display.UpdateMessage($"Completed {_currentJob}");
             _display.UpdateJobStatus("No job running");
             _currentJob = null;
+            
+            // Save job status change
+            SaveJobs();
         }
     }
 
-
+    public void UpdateCurrentJobProgress(int progress)
+    {
+        if (_currentJob != null && _currentJob.Status == Job.JobStatus.InWork)
+        {
+            _currentJob.Produce(progress);
+            
+            // Save job progress change
+            SaveJobs();
+        }
+    }
 
     public void ListAllJobs()
     {
@@ -121,11 +165,31 @@ public class JobManager
         }
 
         _display.ClearJobList();
-        foreach (Job job in _jobs.OrderBy(j => j.JobId))
+        
+        // Group jobs by status
+        var completedJobs = _jobs.Where(j => j.Status == Job.JobStatus.Done).OrderBy(j => j.JobId);
+        var pendingJobs = _jobs.Where(j => j.Status == Job.JobStatus.Pending).OrderBy(j => j.JobId);
+        var inWorkJobs = _jobs.Where(j => j.Status == Job.JobStatus.InWork).OrderBy(j => j.JobId);
+        
+        // Add pending jobs
+        foreach (Job job in pendingJobs)
         {
-            _display.AddToJobList(job.ToString());
+            _display.AddToJobList($"[PENDING] {job}");
         }
-        _display.UpdateMessage($"Total Jobs: {_jobs.Count}");
+        
+        // Add in-work jobs
+        foreach (Job job in inWorkJobs)
+        {
+            _display.AddToJobList($"[IN WORK] {job}");
+        }
+        
+        // Add completed jobs
+        foreach (Job job in completedJobs)
+        {
+            _display.AddToJobList($"[COMPLETED] {job}");
+        }
+        
+        _display.UpdateMessage($"Total Jobs: {_jobs.Count} (Pending: {pendingJobs.Count()}, In Work: {inWorkJobs.Count()}, Completed: {completedJobs.Count()})");
     }
 
     public void GetJobStatus(int jobId)
@@ -168,5 +232,8 @@ public class JobManager
 
         _jobs.Remove(job);
         _display.UpdateMessage($"Cancelled and removed Job #{jobId}");
+        
+        // Save after cancelling a job
+        SaveJobs();
     }
 }
