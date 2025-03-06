@@ -3,52 +3,161 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        
+        xmlns:local="clr-namespace:GUI_VirtualFacotry"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="Maschinensimulation" Height="600" Width="900">
+        Title="Maschinensimulation" 
+        Height="600" Width="900"
+        MinHeight="450" MinWidth="600">
+
+    <Window.Resources>
+        <!-- Styles for consistent UI -->
+        <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+
+        <Style x:Key="StandardButton" TargetType="Button">
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="MinHeight" Value="30"/>
+        </Style>
+
+        <Style x:Key="GroupBoxStyle" TargetType="GroupBox">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Padding" Value="5"/>
+        </Style>
+
+        <!-- Converter for proportional sizing -->
+        <local:MultiplierConverter x:Key="MultiplierConverter"/>
+
+        <!-- Timer for updating the clock -->
+        <ObjectDataProvider x:Key="SystemTime" ObjectType="{x:Type sys:DateTime}" MethodName="get_Now">
+            <ObjectDataProvider.MethodParameters>
+                <sys:Int32>0</sys:Int32>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        
-        <!-- Header -->
+
+        <!-- Header - Responsive with ViewBox for text scaling -->
         <Border Grid.Row="0" Background="#2C3E50" Padding="15">
-            <TextBlock Text="Industriemaschinen Simulation" FontSize="24" Foreground="White" FontWeight="Bold"/>
+            <Viewbox Stretch="Uniform" HorizontalAlignment="Left" MaxHeight="40">
+                <TextBlock Text="Industriemaschinen Simulation" Style="{StaticResource HeaderTextStyle}"/>
+            </Viewbox>
         </Border>
-        
-        <!-- Content -->
-        <Grid Grid.Row="1" Margin="20">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
-            
-            <!-- Linke Seite: Maschinen-Status und Bedienung -->
-            <Grid Grid.Column="0">
+
+        <!-- Main Content Area - Uses DockPanel for better responsiveness -->
+        <DockPanel Grid.Row="1" Margin="10" LastChildFill="True">
+
+            <!-- Right Panel (Job Management) - Will maintain proportional size -->
+            <Grid DockPanel.Dock="Right" Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DockPanel}}, Converter={StaticResource MultiplierConverter}, ConverterParameter=0.33}" MinWidth="220">
+                <GroupBox Header="Job Management" Style="{StaticResource GroupBoxStyle}" Margin="5,0,0,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Job Creation Form -->
+                        <Expander Grid.Row="0" Header="Neuen Job erstellen" IsExpanded="True">
+                            <Grid Margin="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Using Grid layout for labels and fields -->
+                                <TextBlock Text="Job Name:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="0,2,5,2"/>
+                                <TextBox x:Name="txtJobName" Grid.Row="0" Grid.Column="1" Margin="0,2"/>
+
+                                <TextBlock Text="Produkt:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,2,5,2"/>
+                                <TextBox x:Name="txtProduct" Grid.Row="1" Grid.Column="1" Margin="0,2"/>
+
+                                <TextBlock Text="Stückzahl:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,2,5,2"/>
+                                <TextBox x:Name="txtQuantity" Grid.Row="2" Grid.Column="1" Margin="0,2"/>
+
+                                <Button x:Name="btnCreateJob" Content="Job erstellen" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" 
+                                        Style="{StaticResource StandardButton}" Margin="0,10,0,0"/>
+                            </Grid>
+                        </Expander>
+
+                        <!-- Job List - Uses * for height to take remaining space -->
+                        <GroupBox Grid.Row="1" Header="Job Liste" Style="{StaticResource GroupBoxStyle}">
+                            <ListView x:Name="lvJobs" VirtualizingStackPanel.IsVirtualizing="True">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="Auto"/>
+                                        <GridViewColumn Header="Produkt" DisplayMemberBinding="{Binding Product}" Width="Auto"/>
+                                        <GridViewColumn Header="Anzahl" DisplayMemberBinding="{Binding Quantity}" Width="Auto"/>
+                                        <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Status}" Width="Auto"/>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </GroupBox>
+
+                        <!-- Job Control Buttons - UniformGrid for equal button sizing -->
+                        <GroupBox Grid.Row="2" Header="Job Steuerung" Style="{StaticResource GroupBoxStyle}">
+                            <UniformGrid Rows="1" Columns="2" Margin="5">
+                                <Button x:Name="btnStartJob" Content="Job Wählen" Style="{StaticResource StandardButton}"/>
+                                <Button x:Name="btnCheckStatus" Content="Status prüfen" Style="{StaticResource StandardButton}"/>
+                            </UniformGrid>
+                        </GroupBox>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+
+            <!-- Left Panel (Machine Status & Control) - Will fill remaining space -->
+            <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                
-                <!-- Maschinen Status -->
-                <GroupBox Grid.Row="0" Header="Maschinenstatus" Margin="0,0,0,15">
-                    <Grid Margin="10">
+
+                <!-- Machine Status Panel -->
+                <GroupBox Grid.Row="0" Header="Maschinenstatus" Style="{StaticResource GroupBoxStyle}">
+                    <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        
-                        <StackPanel Grid.Column="0">
-                            <TextBlock Text="Aktueller Status:" Margin="0,0,0,5"/>
-                            <TextBlock x:Name="txtMachineStatus" Text="Ready" FontSize="16" FontWeight="Bold"/>
-                            <TextBlock Text="Letzter Status-Update:" Margin="0,15,0,5"/>
-                            <TextBlock x:Name="txtLastUpdate" Text="--" FontStyle="Italic"/>
+
+                        <!-- Status Information -->
+                        <StackPanel Grid.Column="0" Margin="5">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="Aktueller Status:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,5,5"/>
+                                <TextBlock x:Name="txtMachineStatus" Text="Ready" Grid.Row="0" Grid.Column="1" FontSize="16" FontWeight="Bold"/>
+
+                                <TextBlock Text="Letzter Update:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,5,5,0"/>
+                                <TextBlock x:Name="txtLastUpdate" Text="--" Grid.Row="1" Grid.Column="1" FontStyle="Italic"/>
+                            </Grid>
                         </StackPanel>
-                        
-                        <!-- Signalsäule -->
+
+                        <!-- Signal Tower -->
                         <Grid Grid.Column="1" Width="60">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"/>
@@ -56,96 +165,59 @@
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            
-                            <Ellipse Grid.Row="0" Width="40" Height="40" Fill="RED" x:Name="signalRed" Stroke="Black" StrokeThickness="1"/>
-                            <Ellipse Grid.Row="1" Width="40" Height="40" Fill="Yellow" x:Name="signalYellow" Stroke="Black" StrokeThickness="1"/>
-                            <Ellipse Grid.Row="2" Width="40" Height="40" Fill="Green" x:Name="signalGreen" Stroke="Black" StrokeThickness="1"/>
+
+                            <Viewbox Grid.Row="0" Stretch="Uniform" Margin="2">
+                                <Ellipse Width="40" Height="40" Fill="Red" x:Name="signalRed" Stroke="Black" StrokeThickness="1"/>
+                            </Viewbox>
+                            <Viewbox Grid.Row="1" Stretch="Uniform" Margin="2">
+                                <Ellipse Width="40" Height="40" Fill="Yellow" x:Name="signalYellow" Stroke="Black" StrokeThickness="1"/>
+                            </Viewbox>
+                            <Viewbox Grid.Row="2" Stretch="Uniform" Margin="2">
+                                <Ellipse Width="40" Height="40" Fill="Green" x:Name="signalGreen" Stroke="Black" StrokeThickness="1"/>
+                            </Viewbox>
                             <TextBlock Grid.Row="3" Text="Signalsäule" HorizontalAlignment="Center" Margin="0,5,0,0"/>
                         </Grid>
                     </Grid>
                 </GroupBox>
-                
-                <!-- Maschinen Steuerung -->
-                <GroupBox Grid.Row="1" Header="Maschinensteuerung" Margin="0,0,0,15">
-                    <StackPanel Margin="10">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            
-                            <Button x:Name="btnStart" Content="Maschine starten" Margin="0,0,5,0" Padding="5" Grid.Column="0"/>
-                            <Button x:Name="btnStop" Content="Maschine stoppen" Margin="5,0,0,0" Padding="5" Grid.Column="1"/>
-                        </Grid>
-                        <Button x:Name="btnTriggerError" Content="Fehler simulieren" Margin="0,10,0,0" Padding="5"/>
-                    </StackPanel>
+
+                <!-- Machine Control Panel -->
+                <GroupBox Grid.Row="1" Header="Maschinensteuerung" Style="{StaticResource GroupBoxStyle}">
+                    <UniformGrid Rows="2" Columns="2" Margin="5">
+                        <Button x:Name="btnStart" Content="Maschine starten" Style="{StaticResource StandardButton}"/>
+                        <Button x:Name="btnStop" Content="Maschine stoppen" Style="{StaticResource StandardButton}"/>
+                        <Button x:Name="btnTriggerError" Content="Fehler simulieren" Style="{StaticResource StandardButton}"/>
+                        <Button x:Name="btnReset" Content="Reset" Style="{StaticResource StandardButton}"/>
+                    </UniformGrid>
                 </GroupBox>
-                
-                <!-- Konsole -->
-                <GroupBox Grid.Row="2" Header="Konsole">
+
+                <!-- Console Panel - Uses * for height to take remaining space -->
+                <GroupBox Grid.Row="2" Header="Konsole" Style="{StaticResource GroupBoxStyle}">
                     <Grid>
-                        <TextBox x:Name="txtConsole" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
-                                 Background="#F0F0F0" Padding="5" FontFamily="Consolas"/>
-                        <Button x:Name="btnClearConsole" Content="Konsole leeren" HorizontalAlignment="Right" VerticalAlignment="Bottom" 
-                                Margin="10" Padding="5,2"/>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+                            <TextBox x:Name="txtConsole" IsReadOnly="True" TextWrapping="Wrap"
+                                    Background="#F0F0F0" Padding="5" FontFamily="Consolas" BorderThickness="0"/>
+                        </ScrollViewer>
+
+                        <Button x:Name="btnClearConsole" Content="Konsole leeren" Grid.Row="1"
+                                HorizontalAlignment="Right" Style="{StaticResource StandardButton}"/>
                     </Grid>
                 </GroupBox>
             </Grid>
-            
-            <!-- Rechte Seite: Jobs -->
-            <GroupBox Grid.Column="1" Header="Job Management" Margin="15,0,0,0">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    
-                    <!-- Job Erstellung -->
-                    <GroupBox Grid.Row="0" Header="Neuen Job erstellen" Margin="5">
-                        <StackPanel Margin="5">
-                            <TextBlock Text="Job Name:"/>
-                            <TextBox x:Name="txtJobName" Margin="0,2,0,5"/>
-                            
-                            <TextBlock Text="Produkt:"/>
-                            <TextBox x:Name="txtProduct" Margin="0,2,0,5"/>
-                            
-                            <TextBlock Text="Stückzahl:"/>
-                            <TextBox x:Name="txtQuantity" Margin="0,2,0,5"/>
-                            
-                            <Button x:Name="btnCreateJob" Content="Job erstellen" Margin="0,10,0,0" Padding="5"/>
-                        </StackPanel>
-                    </GroupBox>
-                    
-                    <!-- Job Liste -->
-                    <GroupBox Grid.Row="1" Header="Job Liste" Margin="5">
-                        <ListView x:Name="lvJobs" Margin="5">
-                            <ListView.View>
-                                <GridView>
-                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="80"/>
-                                    <GridViewColumn Header="Produkt" DisplayMemberBinding="{Binding Product}" Width="80"/>
-                                    <GridViewColumn Header="Stückzahl" DisplayMemberBinding="{Binding Quantity}" Width="60"/>
-                                    <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Status}" Width="80"/>
-                                </GridView>
-                            </ListView.View>
-                        </ListView>
-                    </GroupBox>
-                    
-                    <!-- Job Steuerung -->
-                    <GroupBox Grid.Row="2" Header="Job Steuerung" Margin="5">
-                        <StackPanel Margin="5">
-                            <Button x:Name="btnStartJob" Content="Job starten" Margin="0,5,0,5" Padding="5"/>
-                            <Button x:Name="btnCheckStatus" Content="Status prüfen" Margin="0,0,0,5" Padding="5"/>
-                        </StackPanel>
-                    </GroupBox>
-                </Grid>
-            </GroupBox>
-        </Grid>
-        
-        <!-- Footer -->
+        </DockPanel>
+
+        <!-- Footer Status Bar -->
         <StatusBar Grid.Row="2" Background="#ECF0F1">
             <StatusBarItem>
                 <TextBlock x:Name="txtStatusBar" Text="Bereit"/>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem HorizontalAlignment="Right">
+                <TextBlock x:Name="txtDateTime" Text="{Binding Source={StaticResource SystemTime}, StringFormat=\{0:dd.MM.yyyy HH:mm:ss\}}"/>
             </StatusBarItem>
         </StatusBar>
     </Grid>

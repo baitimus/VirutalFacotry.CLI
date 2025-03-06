@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,8 +20,34 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-    
-    
-    
+        
+        System.Windows.Threading.DispatcherTimer timer = new System.Windows.Threading.DispatcherTimer();
+        timer.Interval = TimeSpan.FromSeconds(1);
+        timer.Tick += (s, e) => {
+            ObjectDataProvider timeProvider = (ObjectDataProvider)FindResource("SystemTime");
+            timeProvider.Refresh();
+        };
+        timer.Start();
+
+
+    }
+
+}
+
+
+public class MultiplierConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        double factor = 1.0;
+        if (parameter != null)
+            double.TryParse(parameter.ToString(), out factor);
+
+        return (double)value * factor;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
     }
 }

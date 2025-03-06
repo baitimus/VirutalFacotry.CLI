@@ -138,9 +138,13 @@ class Program
         string jobIdInput = Console.ReadLine();
         display.ClearInput();
 
+
+      
         if (int.TryParse(jobIdInput, out int jobId))
         {
             machine.JobManager.CancelJob(jobId);
+
+
         }
         else
         {
