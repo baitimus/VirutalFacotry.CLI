@@ -5,6 +5,8 @@ VisualStudioVersion = 17.13.35825.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirutalFacotry.CLI", "VirutalFacotry.CLI\VirutalFacotry.CLI.csproj", "{8A49E5CA-F398-41A1-944E-8BC40142A44E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI-VirtualFacotry", "GUI-VirtualFacotry\GUI-VirtualFacotry.csproj", "{E13365B2-AED3-49E6-87B1-17942A92DA84}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{8A49E5CA-F398-41A1-944E-8BC40142A44E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A49E5CA-F398-41A1-944E-8BC40142A44E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A49E5CA-F398-41A1-944E-8BC40142A44E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E13365B2-AED3-49E6-87B1-17942A92DA84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E13365B2-AED3-49E6-87B1-17942A92DA84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E13365B2-AED3-49E6-87B1-17942A92DA84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E13365B2-AED3-49E6-87B1-17942A92DA84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

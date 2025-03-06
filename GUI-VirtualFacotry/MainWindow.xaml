@@ -3,10 +3,150 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:GUI_VirtualFacotry"
+        
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Maschinensimulation" Height="550" Width="800">
     <Grid>
-
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#2C3E50" Padding="15">
+            <TextBlock Text="Industriemaschinen Simulation" FontSize="24" Foreground="White" FontWeight="Bold"/>
+        </Border>
+        
+        <!-- Content -->
+        <Grid Grid.Row="1" Margin="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            
+            <!-- Linke Seite: Maschinen-Status und Bedienung -->
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                
+                <!-- Maschinen Status -->
+                <GroupBox Grid.Row="0" Header="Maschinenstatus" Margin="0,0,0,15">
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Aktueller Status:" Margin="0,0,0,5"/>
+                            <TextBlock x:Name="txtMachineStatus" Text="Ready" FontSize="16" FontWeight="Bold"/>
+                            <TextBlock Text="Letzter Status-Update:" Margin="0,15,0,5"/>
+                            <TextBlock x:Name="txtLastUpdate" Text="--" FontStyle="Italic"/>
+                        </StackPanel>
+                        
+                        <!-- Signalsäule -->
+                        <Grid Grid.Column="1" Width="60">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            
+                            <Ellipse Grid.Row="0" Width="40" Height="40" Fill="Gray" x:Name="signalRed" Stroke="Black" StrokeThickness="1"/>
+                            <Ellipse Grid.Row="1" Width="40" Height="40" Fill="Gray" x:Name="signalYellow" Stroke="Black" StrokeThickness="1"/>
+                            <Ellipse Grid.Row="2" Width="40" Height="40" Fill="Gray" x:Name="signalGreen" Stroke="Black" StrokeThickness="1"/>
+                            <TextBlock Grid.Row="3" Text="Signalsäule" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                        </Grid>
+                    </Grid>
+                </GroupBox>
+                
+                <!-- Maschinen Steuerung -->
+                <GroupBox Grid.Row="1" Header="Maschinensteuerung" Margin="0,0,0,15">
+                    <StackPanel Margin="10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <Button x:Name="btnStart" Content="Maschine starten" Margin="0,0,5,0" Padding="5" Grid.Column="0"/>
+                            <Button x:Name="btnStop" Content="Maschine stoppen" Margin="5,0,0,0" Padding="5" Grid.Column="1"/>
+                        </Grid>
+                        <Button x:Name="btnTriggerError" Content="Fehler simulieren" Margin="0,10,0,0" Padding="5"/>
+                    </StackPanel>
+                </GroupBox>
+                
+                <!-- Konsole -->
+                <GroupBox Grid.Row="2" Header="Konsole">
+                    <Grid>
+                        <TextBox x:Name="txtConsole" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                                 Background="#F0F0F0" Padding="5" FontFamily="Consolas"/>
+                        <Button x:Name="btnClearConsole" Content="Konsole leeren" HorizontalAlignment="Right" VerticalAlignment="Bottom" 
+                                Margin="10" Padding="5,2"/>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+            
+            <!-- Rechte Seite: Jobs -->
+            <GroupBox Grid.Column="1" Header="Job Management" Margin="15,0,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <!-- Job Erstellung -->
+                    <GroupBox Grid.Row="0" Header="Neuen Job erstellen" Margin="5">
+                        <StackPanel Margin="5">
+                            <TextBlock Text="Job Name:"/>
+                            <TextBox x:Name="txtJobName" Margin="0,2,0,5"/>
+                            
+                            <TextBlock Text="Produkt:"/>
+                            <TextBox x:Name="txtProduct" Margin="0,2,0,5"/>
+                            
+                            <TextBlock Text="Stückzahl:"/>
+                            <TextBox x:Name="txtQuantity" Margin="0,2,0,5"/>
+                            
+                            <Button x:Name="btnCreateJob" Content="Job erstellen" Margin="0,10,0,0" Padding="5"/>
+                        </StackPanel>
+                    </GroupBox>
+                    
+                    <!-- Job Liste -->
+                    <GroupBox Grid.Row="1" Header="Job Liste" Margin="5">
+                        <ListView x:Name="lvJobs" Margin="5">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="80"/>
+                                    <GridViewColumn Header="Produkt" DisplayMemberBinding="{Binding Product}" Width="80"/>
+                                    <GridViewColumn Header="Stückzahl" DisplayMemberBinding="{Binding Quantity}" Width="60"/>
+                                    <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Status}" Width="80"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </GroupBox>
+                    
+                    <!-- Job Steuerung -->
+                    <GroupBox Grid.Row="2" Header="Job Steuerung" Margin="5">
+                        <StackPanel Margin="5">
+                            <Button x:Name="btnStartJob" Content="Job starten" Margin="0,5,0,5" Padding="5"/>
+                            <Button x:Name="btnCheckStatus" Content="Status prüfen" Margin="0,0,0,5" Padding="5"/>
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+            </GroupBox>
+        </Grid>
+        
+        <!-- Footer -->
+        <StatusBar Grid.Row="2" Background="#ECF0F1">
+            <StatusBarItem>
+                <TextBlock x:Name="txtStatusBar" Text="Bereit"/>
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </Window>

@@ -19,6 +19,8 @@ public class ConsoleDisplay
         DrawInitialInterface();
     }
 
+
+
     private void DrawInitialInterface()
     {
         Console.WriteLine("Virtual Factory Machine Simulation");
