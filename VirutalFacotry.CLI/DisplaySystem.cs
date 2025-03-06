@@ -11,7 +11,7 @@ public class ConsoleDisplay
     private int _jobListStartPosition;
     private int _inputLinePosition;
     private List<string> _jobListItems = new List<string>();
-    private int _maxJobListLines = 5;
+    private int _maxJobListLines = 10;
 
     public ConsoleDisplay()
     {
@@ -36,7 +36,7 @@ public class ConsoleDisplay
         Console.WriteLine("Message: ");
         Console.WriteLine();
 
-        // Job list section
+      
    
 
         // Input prompt

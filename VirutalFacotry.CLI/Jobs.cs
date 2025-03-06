@@ -91,7 +91,7 @@ public class JobManager
         return newJob;
     }
     
-    private void SaveJobs()
+    public void SaveJobs()
     {
         JobPersistence.SaveJobs(_jobs);
     }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         
         mc:Ignorable="d"
-        Title="Maschinensimulation" Height="550" Width="800">
+        Title="Maschinensimulation" Height="600" Width="900">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -57,9 +57,9 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             
-                            <Ellipse Grid.Row="0" Width="40" Height="40" Fill="Gray" x:Name="signalRed" Stroke="Black" StrokeThickness="1"/>
-                            <Ellipse Grid.Row="1" Width="40" Height="40" Fill="Gray" x:Name="signalYellow" Stroke="Black" StrokeThickness="1"/>
-                            <Ellipse Grid.Row="2" Width="40" Height="40" Fill="Gray" x:Name="signalGreen" Stroke="Black" StrokeThickness="1"/>
+                            <Ellipse Grid.Row="0" Width="40" Height="40" Fill="RED" x:Name="signalRed" Stroke="Black" StrokeThickness="1"/>
+                            <Ellipse Grid.Row="1" Width="40" Height="40" Fill="Yellow" x:Name="signalYellow" Stroke="Black" StrokeThickness="1"/>
+                            <Ellipse Grid.Row="2" Width="40" Height="40" Fill="Green" x:Name="signalGreen" Stroke="Black" StrokeThickness="1"/>
                             <TextBlock Grid.Row="3" Text="Signalsäule" HorizontalAlignment="Center" Margin="0,5,0,0"/>
                         </Grid>
                     </Grid>

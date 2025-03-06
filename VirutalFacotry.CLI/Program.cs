@@ -12,7 +12,7 @@ class Program
         Machine machine = new Machine(display);
 
         bool running = true;
-        
+
         while (running)
         {
             display.SetCursorToInput();
@@ -34,10 +34,10 @@ class Program
 
                 case "exit":
                     running = false;
+                    machine.JobManager.SaveJobs(); // Fix: Use the instance of JobManager
                     display.UpdateMessage("Shutting down simulation...");
                     break;
 
-               
                 case "help":
                     DisplayHelp(display);
                     break;
@@ -54,7 +54,6 @@ class Program
                     SelectJob(machine, display);
                     break;
 
-           
                 case "cancel job":
                     CancelJob(machine, display);
                     break;
@@ -70,7 +69,6 @@ class Program
     {
         display.UpdateMessage("Available commands: 'start', 'stop', 'exit', 'new job', 'list jobs', 'start job', 'cancel job'");
     }
-
 
     private static void CreateNewJob(Machine machine, ConsoleDisplay display)
     {
@@ -112,8 +110,6 @@ class Program
         string jobIdInput = Console.ReadLine();
         display.ClearInput();
 
-
-
         if (int.TryParse(jobIdInput, out int jobId))
         {
             if (machine.JobManager.StartJob(jobId))
@@ -126,8 +122,6 @@ class Program
             display.UpdateMessage("Invalid job ID. Please enter a valid number.");
         }
     }
-
-
 
     private static void CancelJob(Machine machine, ConsoleDisplay display)
     {
