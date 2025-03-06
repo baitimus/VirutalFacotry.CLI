@@ -13,6 +13,7 @@ public class ConsoleDisplay
     private List<string> _jobListItems = new List<string>();
     private int _maxJobListLines = 10;
 
+
     public ConsoleDisplay()
     {
         Console.Clear();
@@ -37,8 +38,6 @@ public class ConsoleDisplay
         Console.WriteLine();
 
       
-   
-
         // Input prompt
         Console.WriteLine("> ");
 

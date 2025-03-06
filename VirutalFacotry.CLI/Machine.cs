@@ -31,6 +31,7 @@ public class Machine
     // Random generator for simulating errors
     private Random _random;
 
+
     public Machine(ConsoleDisplay display)
     {
         _currentState = State.Ready;
@@ -65,7 +66,7 @@ public class Machine
     {
         get { return _jobManager; }
     }
-
+    
     // Start the machine
     public void Start()
     {
@@ -98,8 +99,18 @@ public class Machine
         }
     }
 
+
+
+
+
+
+
+
+
+
+
     // Stop the machine
-    public void Stop()
+  public void Stop()
     {
         switch (CurrentState)
         {
@@ -140,6 +151,11 @@ public class Machine
         {
             while (!cancellationToken.IsCancellationRequested && processCount < targetCycles)
             {
+
+                // Simulate processing time delay at the begginning to prevent instant completion when restarting production
+                await Task.Delay(100, cancellationToken);
+
+
                 processCount++;
                 currentJob.Produce(processCount);
                 
@@ -155,8 +171,7 @@ public class Machine
                     break;
                 }
 
-                // Wait for 3 seconds
-                await Task.Delay(3000, cancellationToken);
+              
             }
 
             // If we completed all cycles without error or cancellation, mark the job as completed
@@ -177,5 +192,23 @@ public class Machine
                 CurrentState = State.Ready;
             }
         }
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is Machine machine &&
+               _currentState == machine._currentState &&
+               EqualityComparer<SignalLight>.Default.Equals(_signalLight, machine._signalLight) &&
+               EqualityComparer<ConsoleDisplay>.Default.Equals(_display, machine._display) &&
+               EqualityComparer<JobManager>.Default.Equals(_jobManager, machine._jobManager) &&
+               EqualityComparer<CancellationTokenSource>.Default.Equals(_cancellationTokenSource, machine._cancellationTokenSource) &&
+               EqualityComparer<Random>.Default.Equals(_random, machine._random) &&
+               CurrentState == machine.CurrentState &&
+               EqualityComparer<JobManager>.Default.Equals(JobManager, machine.JobManager);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(_currentState, _signalLight, _display, _jobManager, _cancellationTokenSource, _random, CurrentState, JobManager);
     }
 }

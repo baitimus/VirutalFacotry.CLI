@@ -34,7 +34,7 @@ class Program
 
                 case "exit":
                     running = false;
-                    machine.JobManager.SaveJobs(); // Fix: Use the instance of JobManager
+                    
                     display.UpdateMessage("Shutting down simulation...");
                     break;
 
@@ -62,6 +62,8 @@ class Program
                     display.UpdateMessage($"Unknown command: '{command}'. Type 'help' for available commands.");
                     break;
             }
+
+            machine.JobManager.SaveJobs();
         }
     }
 
