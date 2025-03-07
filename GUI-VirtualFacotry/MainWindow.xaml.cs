@@ -50,7 +50,7 @@ namespace GUI_VirtualFacotry
         private void UpdateJobList()
         {
             lvJobs.Items.Clear();
-           /* var jobs = _currentMachine.JobManager.GetAllJobs();
+            var jobs = _currentMachine.JobManager.GetAllJobs(); // Assuming ListAllJobs() returns List<Job>
             foreach (var job in jobs)
             {
                 lvJobs.Items.Add(new
@@ -61,7 +61,6 @@ namespace GUI_VirtualFacotry
                     Status = job.Status.ToString()
                 });
             }
-           */
         }
 
         private void btnCreateJob_Click(object sender, RoutedEventArgs e)
