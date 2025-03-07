@@ -1,12 +1,8 @@
-﻿
-
-
-
-namespace VirutalFactoryCore
+﻿namespace VirutalFactoryCore
 {
     public class Machine
     {
-        // Define machine states
+
         public enum State
         {
             Ready,
@@ -14,37 +10,22 @@ namespace VirutalFactoryCore
             Error
         }
 
-        // Current state of the machine
         private State _currentState;
-
-        // Reference to the associated signal light
         private SignalLight _signalLight;
-
-        // Reference to the display
-        
-
-        // Reference to the job manager
         private JobManager _jobManager;
-
-        // CancellationTokenSource to control the background task
         private CancellationTokenSource _cancellationTokenSource;
-
-        // Random generator for simulating errors
         private Random _random;
+        private int _machineId;
 
-
-        public Machine()
+        public Machine(int machineId)
         {
+            _machineId = machineId;
             _currentState = State.Ready;
             _random = new Random();
-           
             _signalLight = new SignalLight();
             _jobManager = new JobManager();
-
-          
         }
 
-        // Property to get current state
         public State CurrentState
         {
             get { return _currentState; }
@@ -53,131 +34,66 @@ namespace VirutalFactoryCore
                 if (_currentState != value)
                 {
                     _currentState = value;
-                    
-
-                    // Update the signal light whenever state changes
                     _signalLight.UpdateFromMachineState(_currentState);
                 }
             }
         }
 
-        // Get access to the job manager
-        public JobManager JobManager
-        {
-            get { return _jobManager; }
-        }
+        public JobManager JobManager => _jobManager;
 
-        // Start the machine
+        public int MachineId => _machineId;
+
         public void Start()
         {
-            switch (CurrentState)
-            {
-                case State.Ready:
-                    // Only start if there's a job in InWork state
-                    Job currentJob = _jobManager.GetCurrentJob();
-                    if (currentJob == null)
-                    {
-                       
-                        return;
-                    }
+            if (CurrentState != State.Ready)
+                return;
 
-                    CurrentState = State.Running;
-                 
+            Job currentJob = _jobManager.GetCurrentJob();
+            if (currentJob == null)
+                return;
 
-                    // Start the background process
-                    _cancellationTokenSource = new CancellationTokenSource();
-                    Task.Run(() => RunningProcess(_cancellationTokenSource.Token));
-                    break;
-
-                case State.Running:
-                    
-                    break;
-
-                case State.Error:
-                    
-                    break;
-            }
+            CurrentState = State.Running;
+            _cancellationTokenSource = new CancellationTokenSource();
+            Task.Run(() => RunningProcess(_cancellationTokenSource.Token));
         }
 
-
-
-
-
-
-
-
-
-
-
-        // Stop the machine
         public void Stop()
         {
-            switch (CurrentState)
+            if (CurrentState == State.Running)
             {
-                case State.Ready:
-               
-                    break;
-
-                case State.Running:
-                    // Cancel the background process
-                    _cancellationTokenSource?.Cancel();
-                    CurrentState = State.Ready;
-                    Job currentJob = _jobManager.GetCurrentJob();
-
-
-                    break;
-
-                case State.Error:
-                    // Reset from error state
-                    CurrentState = State.Ready;
-                    
-                    break;
+                _cancellationTokenSource?.Cancel();
+                CurrentState = State.Ready;
+            }
+            else if (CurrentState == State.Error)
+            {
+                CurrentState = State.Ready;
             }
         }
 
-        // Simulate machine running process
         private async Task RunningProcess(CancellationToken cancellationToken)
         {
-
-            int processCount = 0;
             Job currentJob = _jobManager.GetCurrentJob();
-            int targetCycles = currentJob?.Quantity ?? 3; // Default to 3 cycles if no job quantity specified
-
-            processCount = currentJob.QuantityProduced;
-
+            int targetCycles = currentJob?.Quantity ?? 3;
+            int processCount = currentJob?.QuantityProduced ?? 0;
 
             try
             {
                 while (!cancellationToken.IsCancellationRequested && processCount < targetCycles)
                 {
-
-                    // Simulate processing time delay at the begginning to prevent instant completion when restarting production
                     await Task.Delay(100, cancellationToken);
-
-
                     processCount++;
-                    currentJob.Produce(processCount);
+                    currentJob?.Produce(processCount);
 
-
-                    // Update message 
-                  
-
-                    // Randomly generate an error (2% chance)
                     if (_random.Next(100) < 2)
                     {
                         CurrentState = State.Error;
-                        
                         break;
                     }
-
-
                 }
 
-                // If we completed all cycles without error or cancellation, mark the job as completed
                 if (!cancellationToken.IsCancellationRequested && CurrentState != State.Error && currentJob != null && processCount >= targetCycles)
                 {
                     _jobManager.CompleteCurrentJob();
-                    
                 }
             }
             catch (OperationCanceledException)
@@ -192,35 +108,66 @@ namespace VirutalFactoryCore
                 }
             }
         }
+    }
 
-        public override bool Equals(object? obj)
+    public class MachineManager
+    {
+        private List<Machine> _machines;
+
+        public MachineManager()
         {
-            return obj is Machine machine &&
-                   _currentState == machine._currentState &&
-                   EqualityComparer<SignalLight>.Default.Equals(_signalLight, machine._signalLight) &&
-                   
-                   EqualityComparer<JobManager>.Default.Equals(_jobManager, machine._jobManager) &&
-                   EqualityComparer<CancellationTokenSource>.Default.Equals(_cancellationTokenSource, machine._cancellationTokenSource) &&
-                   EqualityComparer<Random>.Default.Equals(_random, machine._random) &&
-                   CurrentState == machine.CurrentState &&
-                   EqualityComparer<JobManager>.Default.Equals(JobManager, machine.JobManager);
-            //
-
-
-
+            _machines = new List<Machine>();
         }
 
-        public override int GetHashCode()
+        public void AddMachine(Machine machine)
         {
-            return HashCode.Combine(_currentState, _signalLight, _jobManager, _cancellationTokenSource, _random, CurrentState, JobManager);
+            _machines.Add(machine);
+        }
 
+        public void StartAllMachines()
+        {
+            foreach (var machine in _machines)
+            {
+                machine.Start();
+            }
+        }
 
+        public void StopAllMachines()
+        {
+            foreach (var machine in _machines)
+            {
+                machine.Stop();
+            }
+        }
+
+        public Machine GetMachineById(int machineId)
+        {
+            return _machines.FirstOrDefault(m => m.MachineId == machineId);
+        }
+
+        public IEnumerable<Machine> GetAllMachines()
+        {
+            return _machines;
         }
     }
 
 
+    public interface IMachineService
+    {
+        void StartMachine(int machineId);
+        void StopMachine(int machineId);
+        void TriggerError(int machineId);
+        void ResetMachine(int machineId);
+        Machine.State GetMachineState(int machineId);
+        Job GetCurrentJob(int machineId);
+        void CreateJob(int machineId, string productName, int quantity);
+        void StartJob(int machineId, int jobId);
+        void CompleteCurrentJob(int machineId);
+        void UpdateCurrentJobProgress(int machineId, int progress);
+        void CancelJob(int machineId, int jobId);
+    }
 
 
 
-
+  
 }
