@@ -167,7 +167,7 @@ namespace VirutalFactoryCore
         {
             if (_jobs.Count == 0)
             {
-               / _display.UpdateMessage("No jobs have been created yet.");
+                
                 return;
             }
 
