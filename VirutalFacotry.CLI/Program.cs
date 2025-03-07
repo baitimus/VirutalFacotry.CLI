@@ -9,7 +9,7 @@ class Program
 
 
         // Create machine with the display
-        Machine machine = new Machine();
+        Machine machine = new Machine(1);
 
         bool running = true;
 

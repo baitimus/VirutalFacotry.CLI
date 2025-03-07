@@ -10,4 +10,3 @@ namespace GUI_VirtualFacotry;
 public partial class App : Application
 {
 }
-

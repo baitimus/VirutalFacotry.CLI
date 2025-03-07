@@ -92,7 +92,7 @@
                                 <TextBox x:Name="txtQuantity" Grid.Row="2" Grid.Column="1" Margin="0,2"/>
 
                                 <Button x:Name="btnCreateJob" Content="Job erstellen" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" 
-                                        Style="{StaticResource StandardButton}" Margin="0,10,0,0"/>
+                                        Style="{StaticResource StandardButton}" Margin="0,10,0,0" Click="btnCreateJob_Click"/>
                             </Grid>
                         </Expander>
 
@@ -113,8 +113,8 @@
                         <!-- Job Control Buttons - UniformGrid for equal button sizing -->
                         <GroupBox Grid.Row="2" Header="Job Steuerung" Style="{StaticResource GroupBoxStyle}">
                             <UniformGrid Rows="1" Columns="2" Margin="5">
-                                <Button x:Name="btnStartJob" Content="Job Wählen" Style="{StaticResource StandardButton}"/>
-                                <Button x:Name="btnCheckStatus" Content="Status prüfen" Style="{StaticResource StandardButton}"/>
+                                <Button x:Name="btnStartJob" Content="Job Wählen" Style="{StaticResource StandardButton}" Click="btnStartJob_Click"/>
+                                <Button x:Name="btnCheckStatus" Content="Status prüfen" Style="{StaticResource StandardButton}" Click="btnCheckStatus_Click"/>
                             </UniformGrid>
                         </GroupBox>
                     </Grid>
@@ -154,9 +154,6 @@
 
                                 <TextBlock Text="Letzter Update:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,5,5,0"/>
                                 <TextBlock x:Name="txtLastUpdate" Text="--" Grid.Row="1" Grid.Column="1" FontStyle="Italic"/>
-                                
-                              
-
                             </Grid>
                         </StackPanel>
 
@@ -186,10 +183,10 @@
                 <!-- Machine Control Panel -->
                 <GroupBox Grid.Row="1" Header="Maschinensteuerung" Style="{StaticResource GroupBoxStyle}">
                     <UniformGrid Rows="2" Columns="2" Margin="5">
-                        <Button x:Name="btnStart" Content="Maschine starten" Style="{StaticResource StandardButton}"/>
-                        <Button x:Name="btnStop" Content="Maschine stoppen" Style="{StaticResource StandardButton}"/>
-                        <Button x:Name="btnTriggerError" Content="Fehler simulieren" Style="{StaticResource StandardButton}"/>
-                        <Button x:Name="btnReset" Content="Reset" Style="{StaticResource StandardButton}"/>
+                        <Button x:Name="btnStart" Content="Maschine starten" Style="{StaticResource StandardButton}" Click="btnStart_Click"/>
+                        <Button x:Name="btnStop" Content="Maschine stoppen" Style="{StaticResource StandardButton}" Click="btnStop_Click"/>
+                        <Button x:Name="btnTriggerError" Content="Fehler simulieren" Style="{StaticResource StandardButton}" Click="btnTriggerError_Click"/>
+                        <Button x:Name="btnReset" Content="Reset" Style="{StaticResource StandardButton}" Click="btnReset_Click"/>
                     </UniformGrid>
                 </GroupBox>
 
@@ -207,7 +204,7 @@
                         </ScrollViewer>
 
                         <Button x:Name="btnClearConsole" Content="Konsole leeren" Grid.Row="1"
-                                HorizontalAlignment="Right" Style="{StaticResource StandardButton}"/>
+                                HorizontalAlignment="Right" Style="{StaticResource StandardButton}" Click="btnClearConsole_Click"/>
                     </Grid>
                 </GroupBox>
             </Grid>
