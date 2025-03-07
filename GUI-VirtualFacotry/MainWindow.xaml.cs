@@ -106,8 +106,8 @@ namespace GUI_VirtualFacotry
             {
                 dynamic selectedJob = lvJobs.SelectedItem;
                 int jobId = int.Parse(selectedJob.Name.Split('#')[1]);
-               // var job = _currentMachine.JobManager.GetJobStatus(jobId);
-               // txtConsole.AppendText($"Job #{jobId} status: {job.Status}\n");
+               var job = _currentMachine.JobManager.GetJobStatus(jobId);
+               txtConsole.AppendText($"Job #{jobId} status: {job.Status}\n");
             }
             else
             {
@@ -131,14 +131,14 @@ namespace GUI_VirtualFacotry
 
         private void btnTriggerError_Click(object sender, RoutedEventArgs e)
         {
-           // _currentMachine.CurrentState = Machine.State.Error;
+            
             UpdateUI();
             txtConsole.AppendText("Error triggered.\n");
         }
 
         private void btnReset_Click(object sender, RoutedEventArgs e)
         {
-           // _currentMachine.CurrentState = Machine.State.Ready;
+            
             UpdateUI();
             txtConsole.AppendText("Machine reset.\n");
         }
