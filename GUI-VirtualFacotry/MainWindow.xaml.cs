@@ -21,13 +21,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         
-        System.Windows.Threading.DispatcherTimer timer = new System.Windows.Threading.DispatcherTimer();
-        timer.Interval = TimeSpan.FromSeconds(1);
-        timer.Tick += (s, e) => {
-            ObjectDataProvider timeProvider = (ObjectDataProvider)FindResource("SystemTime");
-            timeProvider.Refresh();
-        };
-        timer.Start();
+        
 
 
     }

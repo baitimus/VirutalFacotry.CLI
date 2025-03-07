@@ -81,6 +81,10 @@ public class JobManager
 
     public Job CreateJob(string productName, int quantity)
     {
+
+
+
+
         Job newJob = new Job(_nextJobId++, productName, quantity);
         _jobs.Add(newJob);
         _display.UpdateMessage($"Created {newJob}");

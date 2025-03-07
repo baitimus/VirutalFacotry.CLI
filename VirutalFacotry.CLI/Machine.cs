@@ -205,10 +205,16 @@ public class Machine
                EqualityComparer<Random>.Default.Equals(_random, machine._random) &&
                CurrentState == machine.CurrentState &&
                EqualityComparer<JobManager>.Default.Equals(JobManager, machine.JobManager);
+                //
+
+
+            
     }
 
     public override int GetHashCode()
     {
         return HashCode.Combine(_currentState, _signalLight, _display, _jobManager, _cancellationTokenSource, _random, CurrentState, JobManager);
+
+
     }
 }

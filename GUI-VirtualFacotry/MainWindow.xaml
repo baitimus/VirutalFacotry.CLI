@@ -154,6 +154,9 @@
 
                                 <TextBlock Text="Letzter Update:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,5,5,0"/>
                                 <TextBlock x:Name="txtLastUpdate" Text="--" Grid.Row="1" Grid.Column="1" FontStyle="Italic"/>
+                                
+                              
+
                             </Grid>
                         </StackPanel>
 
