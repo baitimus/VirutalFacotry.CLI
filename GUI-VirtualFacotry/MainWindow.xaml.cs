@@ -12,18 +12,21 @@ namespace GUI_VirtualFacotry
     {
         private MachineManager _machineManager;
         private Machine _currentMachine;
-
+        private JobPersistence JobPersistence;
         public MainWindow()
         {
             InitializeComponent();
             InitializeMachineManager();
             UpdateUI();
+            JobPersistence.LoadJobs();
+
+            
         }
 
         private void InitializeMachineManager()
         {
             _machineManager = new MachineManager();
-            _currentMachine = new Machine(1); // Assuming we have one machine with ID 1
+            _currentMachine = new Machine(0); 
             _machineManager.AddMachine(_currentMachine);
         }
 
@@ -57,6 +60,7 @@ namespace GUI_VirtualFacotry
                 {
                     Name = $"Job #{job.JobId}",
                     Product = job.ProductName,
+                    Produced = job.QuantityProduced,
                     Quantity = job.Quantity,
                     Status = job.Status.ToString()
                 });
@@ -84,19 +88,25 @@ namespace GUI_VirtualFacotry
             {
                 dynamic selectedJob = lvJobs.SelectedItem;
                 int jobId = int.Parse(selectedJob.Name.Split('#')[1]);
+                // if status is InWork, set status to Pending
+
+                if (_currentMachine.JobManager.GetJobStatus(jobId).Status == Job.JobStatus.InWork)
+                {
+                   MessageBox.Show("job will be set to Pending");
+                    return;
+                }
+
                 if (_currentMachine.JobManager.StartJob(jobId))
                 {
-                    txtConsole.AppendText($"Job #{jobId} started.\n");
+                    txtConsole.AppendText($"Job #{jobId} selected.\n");
                     UpdateUI();
                 }
-                else
-                {
-                    txtConsole.AppendText($"Failed to start Job #{jobId}.\n");
-                }
+                
+
             }
             else
             {
-                MessageBox.Show("Please select a job to start.");
+             
             }
         }
 
@@ -118,8 +128,8 @@ namespace GUI_VirtualFacotry
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
             _currentMachine.Start();
+
             UpdateUI();
-            txtConsole.AppendText("Machine started.\n");
         }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
